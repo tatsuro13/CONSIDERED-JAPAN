@@ -23,11 +23,14 @@ export async function getSeasonPicks() {
 
   return res.results.map((page: any) => {
     const props = page.properties;
+    const titleProp =
+      props["名前"] ?? props["Title"] ??
+      Object.values(props).find((p: any) => p.type === "title");
     return {
       id: page.id,
       slug: props.Slug?.rich_text[0]?.plain_text ?? page.id,
       brand: props.Brand?.select?.name ?? "",
-      title: props.Title?.title[0]?.plain_text ?? "",
+      title: (titleProp as any)?.title[0]?.plain_text ?? "",
       titleJp: props.TitleJp?.rich_text[0]?.plain_text ?? "",
       tag: props.Tag?.select?.name ?? "NEW ARRIVAL",
       tagJp: props.TagJp?.rich_text[0]?.plain_text ?? "新着",
