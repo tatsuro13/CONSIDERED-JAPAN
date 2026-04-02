@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Helvetica Neue", Arial, sans-serif;
+  --font-jp: "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+}
+
+html {
+  background-color: #F8F8F6;
+  color: #111111;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-feature-settings: "palt";
+}
+
+/* Editorial typography */
+.label {
+  @apply text-[10px] tracking-widest uppercase text-muted;
+}
+
+.label-jp {
+  @apply text-[10px] tracking-editorial text-muted;
+  font-family: var(--font-jp);
+}
+
+/* Cinematic image container */
+.cinema {
+  @apply relative w-full overflow-hidden;
+  aspect-ratio: 2.40 / 1;
+}
+
+.cinema img {
+  @apply absolute inset-0 w-full h-full object-cover;
+}
+
+/* Bilingual block */
+.bilingual-en {
+  @apply text-sm leading-relaxed tracking-wide;
+}
+
+.bilingual-jp {
+  @apply text-sm leading-relaxed mt-1;
+  font-family: var(--font-jp);
+  letter-spacing: 0.05em;
+}
+
+/* Divider */
+.rule {
+  @apply border-t border-border;
+}
