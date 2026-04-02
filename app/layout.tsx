@@ -3,12 +3,20 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "CONSIDERED JAPAN",
+  metadataBase: new URL("https://considered-japan-git-main-tatsuro13s-projects.vercel.app"),
+  title: {
+    template: "%s — CONSIDERED JAPAN",
+    default: "CONSIDERED JAPAN",
+  },
   description: "The English guide to Japan's most thoughtful fashion",
   openGraph: {
     title: "CONSIDERED JAPAN",
     description: "The English guide to Japan's most thoughtful fashion",
     type: "website",
+    siteName: "CONSIDERED JAPAN",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

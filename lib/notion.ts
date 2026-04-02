@@ -121,10 +121,22 @@ export async function getJournalPostBySlug(slug: string) {
   };
 }
 
-// Fetch page blocks (for article body)
+// Fetch page blocks (for article body) — handles pagination
 export async function getPageBlocks(pageId: string) {
-  const res = await notion.blocks.children.list({ block_id: pageId });
-  return res.results;
+  const blocks: any[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const res = await notion.blocks.children.list({
+      block_id: pageId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+    blocks.push(...res.results);
+    cursor = res.has_more ? (res.next_cursor ?? undefined) : undefined;
+  } while (cursor);
+
+  return blocks;
 }
 
 // Fetch all published brands

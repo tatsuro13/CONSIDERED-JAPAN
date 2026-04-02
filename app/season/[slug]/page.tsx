@@ -1,10 +1,47 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSeasonPickBySlug, getPageBlocks } from "@/lib/notion";
+import { getSeasonPicks, getSeasonPickBySlug, getPageBlocks } from "@/lib/notion";
 import { NotionBlocks } from "@/app/components/notion-blocks";
 
 export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const picks = await getSeasonPicks();
+  return picks.map((pick) => ({ slug: pick.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const pick = await getSeasonPickBySlug(slug);
+  if (!pick) return {};
+
+  const title = pick.brand ? `${pick.brand} — ${pick.title}` : pick.title;
+  const description = `${pick.tag} from ${pick.brand}. ${pick.titleJp}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime: pick.date || undefined,
+      ...(pick.image && { images: [{ url: pick.image, width: 1200, height: 630 }] }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(pick.image && { images: [pick.image] }),
+    },
+  };
+}
 
 export default async function SeasonPickPage({
   params,
@@ -19,12 +56,10 @@ export default async function SeasonPickPage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-12">
-      {/* Back */}
       <Link href="/season" className="label hover:text-ink transition-colors">
         ← SEASON
       </Link>
 
-      {/* Image */}
       {pick.image && (
         <div className="cinema overflow-hidden my-8 relative">
           <Image
@@ -37,7 +72,6 @@ export default async function SeasonPickPage({
         </div>
       )}
 
-      {/* Header */}
       <div className="border-b border-border pb-6 mb-8">
         <div className="flex justify-between mb-3">
           <span className="label">{pick.tag}</span>
@@ -51,7 +85,6 @@ export default async function SeasonPickPage({
         )}
       </div>
 
-      {/* Body */}
       {blocks.length > 0 && <NotionBlocks blocks={blocks} />}
     </div>
   );
