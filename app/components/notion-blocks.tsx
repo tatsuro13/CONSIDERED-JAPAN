@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type RichText = { plain_text: string; annotations?: any; href?: string | null };
 
 function renderRichText(texts: RichText[]) {
@@ -59,6 +61,29 @@ export function NotionBlocks({ blocks }: { blocks: any[] }) {
             );
           case "divider":
             return <hr key={block.id} className="border-border my-8" />;
+          case "image": {
+            const src =
+              block.image?.type === "external"
+                ? block.image.external?.url
+                : block.image?.file?.url;
+            const caption = block.image?.caption?.[0]?.plain_text ?? "";
+            if (!src) return null;
+            return (
+              <figure key={block.id} className="my-8">
+                <div className="cinema overflow-hidden relative">
+                  <Image
+                    src={src}
+                    alt={caption}
+                    fill
+                    className="object-cover grayscale"
+                  />
+                </div>
+                {caption && (
+                  <figcaption className="label text-muted mt-2 text-center">{caption}</figcaption>
+                )}
+              </figure>
+            );
+          }
           default:
             return null;
         }

@@ -139,6 +139,36 @@ export async function getPageBlocks(pageId: string) {
   return blocks;
 }
 
+// Fetch a single brand by slug
+export async function getBrandBySlug(slug: string) {
+  const res = await notion.databases.query({
+    database_id: DATABASES.brands,
+    filter: {
+      and: [
+        { property: "Status", select: { equals: "Published" } },
+        { property: "Slug", rich_text: { equals: slug } },
+      ],
+    },
+  });
+
+  if (!res.results.length) return null;
+  const page = res.results[0] as any;
+  const props = page.properties;
+  return {
+    id: page.id,
+    name: extractTitle(props),
+    nameJp: props.NameJp?.rich_text[0]?.plain_text ?? "",
+    slug: props.Slug?.rich_text[0]?.plain_text ?? page.id,
+    since: props.Since?.number?.toString() ?? "",
+    category: props.Category?.select?.name ?? "",
+    internationalShipping: props.InternationalShipping?.checkbox ?? false,
+    officialUrl: props.OfficialUrl?.url ?? "",
+    description: props.Description?.rich_text[0]?.plain_text ?? "",
+    descriptionJp: props.DescriptionJp?.rich_text[0]?.plain_text ?? "",
+    heroImage: props.HeroImage?.url ?? "",
+  };
+}
+
 // Fetch all published brands
 export async function getBrands() {
   const res = await notion.databases.query({
@@ -155,10 +185,12 @@ export async function getBrands() {
       id: page.id,
       name: extractTitle(props),
       nameJp: props.NameJp?.rich_text[0]?.plain_text ?? "",
+      slug: props.Slug?.rich_text[0]?.plain_text ?? "",
       since: props.Since?.number?.toString() ?? "",
       category: props.Category?.select?.name ?? "",
       internationalShipping: props.InternationalShipping?.checkbox ?? false,
       officialUrl: props.OfficialUrl?.url ?? "",
+      heroImage: props.HeroImage?.url ?? "",
     };
   });
 }

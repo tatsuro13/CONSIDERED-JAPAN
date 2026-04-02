@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getBrands } from "@/lib/notion";
 
 export const revalidate = 60;
@@ -29,7 +30,13 @@ export default async function BrandsPage() {
               className="py-5 grid grid-cols-2 md:grid-cols-4 gap-4 items-baseline"
             >
               <div>
-                <p className="text-sm font-medium tracking-wide">{brand.name}</p>
+                {brand.slug ? (
+                  <Link href={`/brands/${brand.slug}`} className="hover:underline underline-offset-2">
+                    <p className="text-sm font-medium tracking-wide">{brand.name}</p>
+                  </Link>
+                ) : (
+                  <p className="text-sm font-medium tracking-wide">{brand.name}</p>
+                )}
                 <p className="label-jp mt-0.5">{brand.nameJp}</p>
               </div>
               <p className="label hidden md:block">
