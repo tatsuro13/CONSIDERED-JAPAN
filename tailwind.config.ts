@@ -16,9 +16,9 @@ const config: Config = {
       },
       colors: {
         ink: "#111111",
-        paper: "#F8F8F6",
-        muted: "#888888",
-        border: "#E0E0E0",
+        paper: "#FAFAFA",
+        muted: "#777777",
+        border: "#E5E5E5",
       },
       letterSpacing: {
         widest: "0.2em",

@@ -137,17 +137,25 @@ export interface FeedItem {
 }
 
 export async function getFeedItems(): Promise<FeedItem[]> {
-  const res = await notion.databases.query({
-    database_id: DATABASES.journal,
-    filter: {
-      property: "Status",
-      select: { equals: "Published" },
-    },
-    sorts: [{ property: "Date", direction: "descending" }],
-    page_size: 50,
-  });
+  const allPages: any[] = [];
+  let cursor: string | undefined;
 
-  return res.results.map((page: any) => {
+  do {
+    const res = await notion.databases.query({
+      database_id: DATABASES.journal,
+      filter: {
+        property: "Status",
+        select: { equals: "Published" },
+      },
+      sorts: [{ property: "Date", direction: "descending" }],
+      page_size: 100,
+      start_cursor: cursor,
+    });
+    allPages.push(...res.results);
+    cursor = res.has_more ? (res.next_cursor ?? undefined) : undefined;
+  } while (cursor);
+
+  return allPages.map((page: any) => {
     const props = page.properties;
     return {
       id: page.id,

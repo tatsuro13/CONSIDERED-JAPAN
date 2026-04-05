@@ -5,11 +5,21 @@
 :root {
   --font-sans: "Helvetica Neue", Arial, sans-serif;
   --font-jp: "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  --color-ink: #111;
+  --color-paper: #FAFAFA;
+  --color-muted: #777;
+  --color-border: #E5E5E5;
+  --color-product: #1a1a2e;
+  --color-essay: #2d4a3e;
+  --color-collection: #3d2c2e;
+  --color-brand-story: #2c3e50;
+  --color-report: #4a3728;
+  --color-culture: #3b3054;
 }
 
 html {
-  background-color: #F8F8F6;
-  color: #111111;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -17,17 +27,30 @@ body {
   font-feature-settings: "palt";
 }
 
-/* Editorial typography */
+/* ── Labels ── */
 .label {
-  @apply text-[10px] tracking-widest uppercase text-muted;
+  @apply text-[10px] tracking-widest uppercase;
+  color: var(--color-muted);
 }
 
 .label-jp {
-  @apply text-[10px] tracking-editorial text-muted;
+  @apply text-[10px] tracking-editorial;
   font-family: var(--font-jp);
+  color: var(--color-muted);
 }
 
-/* Cinematic image container */
+/* ── Category badge ── */
+.badge {
+  @apply inline-block text-[9px] tracking-widest uppercase px-2 py-0.5 text-white font-medium;
+}
+.badge-product { background: var(--color-product); }
+.badge-essay { background: var(--color-essay); }
+.badge-collection { background: var(--color-collection); }
+.badge-brand-story { background: var(--color-brand-story); }
+.badge-report { background: var(--color-report); }
+.badge-culture { background: var(--color-culture); }
+
+/* ── Cinematic container ── */
 .cinema {
   @apply relative w-full overflow-hidden;
   aspect-ratio: 2.40 / 1;
@@ -37,7 +60,7 @@ body {
   @apply absolute inset-0 w-full h-full object-cover;
 }
 
-/* Bilingual block — EN first, JP below */
+/* ── Bilingual text ── */
 .bilingual-en {
   @apply text-[15px] leading-[1.9] tracking-wide;
 }
@@ -46,20 +69,10 @@ body {
   @apply text-[13px] leading-[1.9] mt-2;
   font-family: var(--font-jp);
   letter-spacing: 0.04em;
-  color: #666;
+  color: var(--color-muted);
 }
 
-/* Article body paragraph */
-.article-body p {
-  @apply text-[15px] leading-[1.9] tracking-wide mb-8;
-}
-
-/* Divider */
-.rule {
-  @apply border-t border-border;
-}
-
-/* Title pair — EN/JP */
+/* ── Title pair ── */
 .title-en {
   @apply tracking-wide font-light leading-snug;
 }
@@ -68,4 +81,46 @@ body {
   font-family: var(--font-jp);
   letter-spacing: 0.06em;
   line-height: 1.6;
+}
+
+/* ── Article body ── */
+.article-body p {
+  @apply text-[15px] leading-[1.9] tracking-wide mb-8;
+}
+
+/* ── Card hover ── */
+.card-hover {
+  @apply transition-all duration-300;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+.card-hover:hover img {
+  transform: scale(1.03);
+  transition: transform 0.6s ease;
+}
+
+/* ── Divider ── */
+.rule {
+  @apply border-t;
+  border-color: var(--color-border);
+}
+
+/* ── Image-less card background pattern ── */
+.no-image-card {
+  position: relative;
+  overflow: hidden;
+}
+.no-image-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image:
+    linear-gradient(45deg, currentColor 25%, transparent 25%),
+    linear-gradient(-45deg, currentColor 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, currentColor 75%),
+    linear-gradient(-45deg, transparent 75%, currentColor 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
