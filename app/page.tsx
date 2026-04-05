@@ -1,108 +1,152 @@
-import Image from "next/image";
 import Link from "next/link";
-import { getSeasonPicks, getBrands } from "@/lib/notion";
+import Image from "next/image";
+import { getFeedItems } from "@/lib/notion";
 
 export const revalidate = 60;
 
-export default async function Home() {
-  const [picks, brands] = await Promise.all([getSeasonPicks(), getBrands()]);
-  const featured = picks.slice(0, 3);
+function formatDate(d: string) {
+  if (!d) return "";
+  const date = new Date(d);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export default async function FeedPage() {
+  const items = await getFeedItems();
+  const hero = items[0];
+  const rest = items.slice(1);
 
   return (
     <div>
-      {/* Hero */}
-      <section className="border-b border-border">
-        <div className="cinema">
-          <Image
-            src={featured[0]?.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2400&q=85"}
-            alt="CONSIDERED JAPAN"
-            fill
-            priority
-            className="object-cover grayscale"
-          />
-          <div className="absolute inset-0 bg-ink/30" />
-          <div className="absolute bottom-8 left-6 md:left-12">
-            <p className="text-[10px] tracking-widest uppercase text-white/70 mb-2">
-              The English guide to Japan&apos;s most thoughtful fashion
-            </p>
-            <h1 className="text-white text-2xl md:text-4xl tracking-widest uppercase font-light">
-              Considered Japan
-            </h1>
-            <p className="text-white/70 text-xs mt-1" style={{ fontFamily: "var(--font-jp)", letterSpacing: "0.15em" }}>
-              考えられた日本のファッション
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Editorial intro */}
-      <section className="max-w-6xl mx-auto px-6 py-12 border-b border-border">
-        <div className="max-w-xl">
-          <p className="bilingual-en text-ink leading-loose">
-            Japan's most considered fashion exists largely outside the international conversation.
-            We change that — one brand, one season at a time.
-          </p>
-          <p className="bilingual-jp text-muted mt-3">
-            日本の優れたファッションの多くは、国際的な場で語られることなく存在している。
-            私たちはそれを変えていく。
-          </p>
-        </div>
-      </section>
-
-      {/* Featured grid */}
-      {featured.length > 0 && (
-        <section className="max-w-6xl mx-auto px-6 py-12">
-          <div className="flex justify-between items-baseline mb-8 rule pt-0 border-t border-border pb-4">
-            <div>
-              <p className="label">LATEST</p>
-              <p className="label-jp mt-0.5">最新情報</p>
-            </div>
-            <Link href="/season" className="label hover:text-ink transition-colors">
-              View all →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
-            {featured.map((item) => (
-              <Link
-                key={item.id}
-                href={`/season/${item.slug}`}
-                className="group bg-paper block"
-              >
-                <div className="cinema overflow-hidden relative bg-border">
-                  {item.image ? (
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-border" />
+      {/* Hero article */}
+      {hero && (
+        <section className="border-b border-border">
+          <Link href={`/read/${hero.slug}`} className="group block">
+            {hero.heroImage ? (
+              <div className="cinema relative overflow-hidden">
+                <Image
+                  src={hero.heroImage}
+                  alt={hero.title}
+                  fill
+                  priority
+                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-ink/30 group-hover:bg-ink/10 transition-all" />
+                <div className="absolute bottom-6 left-6 md:left-10 right-6 md:right-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    {hero.sourceName && (
+                      <span className="text-[10px] tracking-widest uppercase text-white/60">
+                        {hero.sourceName}
+                      </span>
+                    )}
+                    <span className="text-[10px] tracking-widest text-white/40">
+                      {formatDate(hero.date)}
+                    </span>
+                  </div>
+                  <h2 className="text-white text-lg md:text-2xl title-en max-w-3xl">
+                    {hero.title}
+                  </h2>
+                  {hero.titleJp && (
+                    <p className="text-white/50 text-sm mt-2 title-jp">
+                      {hero.titleJp}
+                    </p>
                   )}
                 </div>
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="label">{item.tag}</span>
-                    <span className="label-jp">{item.tagJp}</span>
-                  </div>
-                  <p className="text-xs tracking-wide font-medium uppercase">{item.brand}</p>
-                  <p className="bilingual-en mt-1 text-xs">{item.title}</p>
-                  <p className="bilingual-jp text-muted text-xs">{item.titleJp}</p>
+              </div>
+            ) : (
+              <div className="px-6 md:px-10 py-16 max-w-5xl mx-auto">
+                <div className="flex items-center gap-3 mb-4">
+                  {hero.sourceName && (
+                    <span className="label">{hero.sourceName}</span>
+                  )}
+                  <span className="label text-muted/50">
+                    {formatDate(hero.date)}
+                  </span>
                 </div>
-              </Link>
-            ))}
-          </div>
+                <h2 className="text-xl md:text-3xl title-en">
+                  {hero.title}
+                </h2>
+                {hero.titleJp && (
+                  <p className="text-base md:text-lg text-muted mt-3 title-jp">
+                    {hero.titleJp}
+                  </p>
+                )}
+                {hero.summary && (
+                  <p className="bilingual-en text-muted mt-6 max-w-2xl">
+                    {hero.summary}
+                  </p>
+                )}
+              </div>
+            )}
+          </Link>
         </section>
       )}
 
-      {/* Brand strip */}
-      <section className="border-t border-border py-8 overflow-hidden">
-        <div className="flex gap-12 px-6 overflow-x-auto scrollbar-none">
-          {(brands.length > 0 ? brands : []).map((b) => (
-            <span key={b.id} className="label whitespace-nowrap">{b.name}</span>
-          ))}
-        </div>
+      {/* Feed */}
+      <section className="max-w-5xl mx-auto px-6">
+        {rest.map((item) => (
+          <article key={item.id} className="border-b border-border py-8">
+            <Link href={`/read/${item.slug}`} className="group block">
+              <div className="flex gap-6 md:gap-10">
+                {/* Text */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-3">
+                    {item.sourceName && (
+                      <span className="label">{item.sourceName}</span>
+                    )}
+                    {item.category && (
+                      <span className="label text-muted/50">{item.category}</span>
+                    )}
+                    <span className="label text-muted/50">
+                      {formatDate(item.date)}
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm md:text-base title-en group-hover:text-ink/70 transition-colors">
+                    {item.title}
+                  </h3>
+
+                  {item.titleJp && (
+                    <p className="text-xs text-muted mt-1.5 title-jp line-clamp-1">
+                      {item.titleJp}
+                    </p>
+                  )}
+
+                  {item.summary && (
+                    <p className="text-xs text-muted mt-3 leading-relaxed line-clamp-2 max-w-xl">
+                      {item.summary}
+                    </p>
+                  )}
+                </div>
+
+                {/* Thumbnail */}
+                {item.heroImage && (
+                  <div className="hidden sm:block w-32 md:w-40 flex-shrink-0">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={item.heroImage}
+                        alt=""
+                        fill
+                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        sizes="160px"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Link>
+          </article>
+        ))}
+
+        {items.length === 0 && (
+          <div className="py-24 text-center">
+            <p className="label">NO ARTICLES YET</p>
+            <p className="label-jp mt-1">記事はまだありません</p>
+          </div>
+        )}
       </section>
     </div>
   );

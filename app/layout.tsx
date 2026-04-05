@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     template: "%s — CONSIDERED JAPAN",
     default: "CONSIDERED JAPAN",
   },
-  description: "The English guide to Japan's most thoughtful fashion",
+  description: "Curated fashion intelligence from Japan",
   openGraph: {
     title: "CONSIDERED JAPAN",
-    description: "The English guide to Japan's most thoughtful fashion",
+    description: "Curated fashion intelligence from Japan",
     type: "website",
     siteName: "CONSIDERED JAPAN",
   },

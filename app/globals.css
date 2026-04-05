@@ -37,18 +37,35 @@ body {
   @apply absolute inset-0 w-full h-full object-cover;
 }
 
-/* Bilingual block */
+/* Bilingual block — EN first, JP below */
 .bilingual-en {
-  @apply text-sm leading-relaxed tracking-wide;
+  @apply text-[15px] leading-[1.9] tracking-wide;
 }
 
 .bilingual-jp {
-  @apply text-sm leading-relaxed mt-1;
+  @apply text-[13px] leading-[1.9] mt-2;
   font-family: var(--font-jp);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  color: #666;
+}
+
+/* Article body paragraph */
+.article-body p {
+  @apply text-[15px] leading-[1.9] tracking-wide mb-8;
 }
 
 /* Divider */
 .rule {
   @apply border-t border-border;
+}
+
+/* Title pair — EN/JP */
+.title-en {
+  @apply tracking-wide font-light leading-snug;
+}
+
+.title-jp {
+  font-family: var(--font-jp);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
 }

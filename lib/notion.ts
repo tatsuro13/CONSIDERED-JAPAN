@@ -121,6 +121,78 @@ export async function getJournalPostBySlug(slug: string) {
   };
 }
 
+// ─── Feed (aggregated articles) ─────────────────────────────
+
+export interface FeedItem {
+  id: string;
+  slug: string;
+  title: string;
+  titleJp: string;
+  date: string;
+  sourceUrl: string;
+  sourceName: string;
+  heroImage: string;
+  summary: string;
+  category: string;
+}
+
+export async function getFeedItems(): Promise<FeedItem[]> {
+  const res = await notion.databases.query({
+    database_id: DATABASES.journal,
+    filter: {
+      property: "Status",
+      select: { equals: "Published" },
+    },
+    sorts: [{ property: "Date", direction: "descending" }],
+    page_size: 50,
+  });
+
+  return res.results.map((page: any) => {
+    const props = page.properties;
+    return {
+      id: page.id,
+      slug: props.Slug?.rich_text[0]?.plain_text ?? page.id,
+      title: extractTitle(props),
+      titleJp: props.TitleJp?.rich_text[0]?.plain_text ?? "",
+      date: props.Date?.date?.start ?? "",
+      sourceUrl: props.SourceUrl?.url ?? "",
+      sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
+      heroImage: props.HeroImage?.url ?? "",
+      summary: props.Summary?.rich_text[0]?.plain_text ?? "",
+      category: props.Category?.select?.name ?? "",
+    };
+  });
+}
+
+export async function getFeedItemBySlug(slug: string) {
+  const res = await notion.databases.query({
+    database_id: DATABASES.journal,
+    filter: {
+      and: [
+        { property: "Status", select: { equals: "Published" } },
+        { property: "Slug", rich_text: { equals: slug } },
+      ],
+    },
+  });
+
+  if (!res.results.length) return null;
+
+  const page = res.results[0] as any;
+  const props = page.properties;
+  return {
+    id: page.id,
+    slug: props.Slug?.rich_text[0]?.plain_text ?? page.id,
+    title: extractTitle(props),
+    titleJp: props.TitleJp?.rich_text[0]?.plain_text ?? "",
+    date: props.Date?.date?.start ?? "",
+    sourceUrl: props.SourceUrl?.url ?? "",
+    sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
+    heroImage: props.HeroImage?.url ?? "",
+    summary: props.Summary?.rich_text[0]?.plain_text ?? "",
+    category: props.Category?.select?.name ?? "",
+  };
+}
+
 // Fetch page blocks (for article body) — handles pagination
 export async function getPageBlocks(pageId: string) {
   const blocks: any[] = [];
