@@ -219,6 +219,78 @@ export async function getPageBlocks(pageId: string) {
   return blocks;
 }
 
+// Fetch related articles (same category, excluding current)
+export async function getRelatedArticles(
+  currentId: string,
+  category: string,
+  limit: number = 6,
+): Promise<FeedItem[]> {
+  const filters: any[] = [
+    { property: "Status", select: { equals: "Published" } },
+  ];
+  if (category) {
+    filters.push({ property: "Category", select: { equals: category } });
+  }
+
+  const res = await notion.databases.query({
+    database_id: DATABASES.journal,
+    filter: { and: filters },
+    sorts: [{ property: "Date", direction: "descending" }],
+    page_size: limit + 1,
+  });
+
+  return res.results
+    .filter((page: any) => page.id !== currentId)
+    .slice(0, limit)
+    .map((page: any) => {
+      const props = page.properties;
+      return {
+        id: page.id,
+        slug: props.Slug?.rich_text[0]?.plain_text ?? page.id,
+        title: extractTitle(props),
+        titleJp: props.TitleJp?.rich_text[0]?.plain_text ?? "",
+        date: props.Date?.date?.start ?? "",
+        sourceUrl: props.SourceUrl?.url ?? "",
+        sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
+        heroImage: props.HeroImage?.url ?? "",
+        summary: props.Summary?.rich_text[0]?.plain_text ?? "",
+        category: props.Category?.select?.name ?? "",
+      };
+    });
+}
+
+// Fetch latest articles (for sidebar / related)
+export async function getLatestArticles(
+  excludeId: string,
+  limit: number = 4,
+): Promise<FeedItem[]> {
+  const res = await notion.databases.query({
+    database_id: DATABASES.journal,
+    filter: { property: "Status", select: { equals: "Published" } },
+    sorts: [{ property: "Date", direction: "descending" }],
+    page_size: limit + 1,
+  });
+
+  return res.results
+    .filter((page: any) => page.id !== excludeId)
+    .slice(0, limit)
+    .map((page: any) => {
+      const props = page.properties;
+      return {
+        id: page.id,
+        slug: props.Slug?.rich_text[0]?.plain_text ?? page.id,
+        title: extractTitle(props),
+        titleJp: props.TitleJp?.rich_text[0]?.plain_text ?? "",
+        date: props.Date?.date?.start ?? "",
+        sourceUrl: props.SourceUrl?.url ?? "",
+        sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
+        heroImage: props.HeroImage?.url ?? "",
+        summary: props.Summary?.rich_text[0]?.plain_text ?? "",
+        category: props.Category?.select?.name ?? "",
+      };
+    });
+}
+
 // Fetch a single brand by slug
 export async function getBrandBySlug(slug: string) {
   const res = await notion.databases.query({

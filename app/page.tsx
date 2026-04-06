@@ -54,33 +54,33 @@ function CardLarge({ item }: { item: any }) {
                   {formatDate(item.date)}
                 </span>
               </div>
-              <h3 className="text-white text-lg md:text-2xl title-en max-w-3xl line-clamp-2">
+              <h3 className="text-white headline-lg max-w-3xl line-clamp-2">
                 {item.title}
               </h3>
               {item.titleJp && (
-                <p className="text-white/40 text-sm mt-2 title-jp line-clamp-1">
+                <p className="text-white/30 text-sm mt-2 title-jp line-clamp-1">
                   {item.titleJp}
                 </p>
               )}
               {item.summary && (
-                <p className="text-white/50 text-sm mt-3 max-w-2xl leading-relaxed hidden md:block line-clamp-2">
+                <p className="text-white/40 text-[13px] mt-3 max-w-2xl leading-[1.9] hidden md:block line-clamp-2">
                   {item.summary}
                 </p>
               )}
             </div>
           </div>
         ) : (
-          <div className="bg-ink text-white p-8 md:p-12 flex flex-col justify-center items-center text-center" style={{ aspectRatio: "2.2/1" }}>
-            <div className="flex items-center gap-2 mb-4">
+          <div className="bg-ink/[0.04] p-8 md:p-12 flex flex-col justify-center items-center text-center" style={{ aspectRatio: "2.2/1" }}>
+            <div className="flex items-center gap-2 mb-5">
               {categoryBadge(item.category)}
-              <span className="text-[9px] tracking-widest text-white/30">{formatDate(item.date)}</span>
+              <span className="text-[9px] tracking-widest text-muted">{formatDate(item.date)}</span>
             </div>
-            <h3 className="text-xl md:text-3xl title-en max-w-3xl leading-relaxed">{item.title}</h3>
+            <h3 className="headline-lg max-w-3xl">{item.title}</h3>
             {item.titleJp && (
-              <p className="text-white/30 text-sm mt-3 title-jp">{item.titleJp}</p>
+              <p className="text-muted text-sm mt-3 title-jp">{item.titleJp}</p>
             )}
             {item.summary && (
-              <p className="text-white/20 text-xs mt-4 max-w-xl leading-relaxed hidden md:block">{item.summary}</p>
+              <p className="text-muted/60 text-xs mt-4 max-w-xl leading-relaxed hidden md:block">{item.summary}</p>
             )}
           </div>
         )}
@@ -105,10 +105,10 @@ function CardMedium({ item }: { item: any }) {
           </div>
         ) : (
           <div
-            className="no-image-card bg-ink text-white flex items-end p-5 mb-4"
+            className="bg-ink/[0.04] flex items-end p-5 mb-4"
             style={{ aspectRatio: "16/10" }}
           >
-            <span className="text-base md:text-lg title-en leading-snug line-clamp-3">
+            <span className="headline-sm leading-snug line-clamp-3">
               {item.title}
             </span>
           </div>
@@ -119,15 +119,15 @@ function CardMedium({ item }: { item: any }) {
           <span className="label">{formatDate(item.date)}</span>
         </div>
         {item.heroImage && (
-          <h3 className="text-sm md:text-base title-en group-hover:opacity-70 transition-opacity line-clamp-2">
+          <h3 className="text-[14px] md:text-base title-en group-hover:opacity-70 transition-opacity line-clamp-2 leading-snug">
             {item.title}
           </h3>
         )}
         {item.titleJp && (
-          <p className="text-xs text-muted mt-1 title-jp line-clamp-1">{item.titleJp}</p>
+          <p className="text-[11px] text-muted mt-1.5 title-jp line-clamp-1">{item.titleJp}</p>
         )}
         {item.summary && (
-          <p className="text-xs text-muted mt-2 leading-relaxed line-clamp-2">{item.summary}</p>
+          <p className="text-[11px] text-muted mt-2 leading-relaxed line-clamp-2">{item.summary}</p>
         )}
       </Link>
     </article>
@@ -149,7 +149,7 @@ function CardSmall({ item }: { item: any }) {
             />
           </div>
         ) : (
-          <div className="no-image-card bg-ink flex-shrink-0 w-24 h-24 md:w-28 md:h-28" />
+          <div className="bg-ink/[0.04] flex-shrink-0 w-24 h-24 md:w-28 md:h-28" />
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -334,16 +334,16 @@ export default async function FeedPage() {
                       {formatDate(hero.date)}
                     </span>
                   </div>
-                  <h2 className="text-white text-xl md:text-3xl title-en max-w-4xl">
+                  <h2 className="text-white headline-xl max-w-4xl">
                     {hero.title}
                   </h2>
                   {hero.titleJp && (
-                    <p className="text-white/50 text-sm md:text-base mt-2 title-jp">
+                    <p className="text-white/40 text-sm md:text-lg mt-3 title-jp">
                       {hero.titleJp}
                     </p>
                   )}
                   {hero.summary && (
-                    <p className="text-white/60 text-sm mt-4 max-w-2xl leading-relaxed hidden md:block">
+                    <p className="text-white/50 text-[13px] mt-5 max-w-2xl leading-[1.9] tracking-wide hidden md:block">
                       {hero.summary}
                     </p>
                   )}
@@ -358,7 +358,7 @@ export default async function FeedPage() {
                       {formatDate(hero.date)}
                     </span>
                   </div>
-                  <h2 className="text-2xl md:text-4xl title-en">{hero.title}</h2>
+                  <h2 className="headline-xl">{hero.title}</h2>
                   {hero.titleJp && (
                     <p className="text-white/50 text-base md:text-lg mt-3 title-jp">
                       {hero.titleJp}
@@ -402,11 +402,11 @@ export default async function FeedPage() {
                         {formatDate(item.date)}
                       </span>
                     </div>
-                    <h3 className="text-white text-sm md:text-base title-en line-clamp-2">
+                    <h3 className="text-white headline-sm line-clamp-2">
                       {item.title}
                     </h3>
                     {item.titleJp && (
-                      <p className="text-white/40 text-xs mt-1 title-jp line-clamp-1">
+                      <p className="text-white/30 text-xs mt-1.5 title-jp line-clamp-1">
                         {item.titleJp}
                       </p>
                     )}
@@ -414,25 +414,20 @@ export default async function FeedPage() {
                 </div>
               ) : (
                 <div
-                  className="no-image-card bg-ink text-white p-6 flex flex-col justify-end"
+                  className="bg-ink/[0.04] p-6 flex flex-col justify-end"
                   style={{ aspectRatio: "16/10" }}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     {categoryBadge(item.category)}
-                    {item.sourceName && (
-                      <span className="text-[9px] tracking-widest text-white/50">
-                        {item.sourceName}
-                      </span>
-                    )}
-                    <span className="text-[9px] tracking-widest text-white/50">
+                    <span className="text-[9px] tracking-widest text-muted">
                       {formatDate(item.date)}
                     </span>
                   </div>
-                  <h3 className="text-sm md:text-lg title-en leading-snug">
+                  <h3 className="headline-sm leading-snug line-clamp-2">
                     {item.title}
                   </h3>
                   {item.titleJp && (
-                    <p className="text-white/40 text-xs mt-2 title-jp line-clamp-1">
+                    <p className="text-muted text-xs mt-2 title-jp line-clamp-1">
                       {item.titleJp}
                     </p>
                   )}
@@ -444,7 +439,7 @@ export default async function FeedPage() {
       )}
 
       {/* ── Article stream with rhythm ── */}
-      <section className="max-w-6xl mx-auto px-6 py-8">
+      <section className="max-w-7xl mx-auto px-6 py-12">
         {renderArticleStream(rest)}
 
         {allItems.length === 0 && (

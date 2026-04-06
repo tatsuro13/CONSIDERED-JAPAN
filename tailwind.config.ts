@@ -10,6 +10,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "Helvetica Neue", "Arial", "sans-serif"],
         jp: ["var(--font-jp)", "Hiragino Kaku Gothic ProN", "sans-serif"],
+        serif: ["Georgia", "Times New Roman", "serif"],
       },
       aspectRatio: {
         cinematic: "2.40 / 1",
@@ -17,12 +18,16 @@ const config: Config = {
       colors: {
         ink: "#111111",
         paper: "#FAFAFA",
-        muted: "#777777",
-        border: "#E5E5E5",
+        muted: "#888888",
+        subtle: "#BBBBBB",
+        border: "#E0E0E0",
       },
       letterSpacing: {
         widest: "0.2em",
         editorial: "0.1em",
+      },
+      maxWidth: {
+        "7xl": "80rem",
       },
     },
   },

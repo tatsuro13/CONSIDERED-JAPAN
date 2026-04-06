@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://considered-japan-git-main-tatsuro13s-projects.vercel.app"),
+  metadataBase: new URL("https://considered-japan.vercel.app"),
   title: {
     template: "%s — CONSIDERED JAPAN",
-    default: "CONSIDERED JAPAN",
+    default: "CONSIDERED JAPAN — Curated Fashion Intelligence from Japan",
   },
-  description: "Curated fashion intelligence from Japan",
+  description:
+    "A curation platform dedicated to Japanese fashion brands that prioritize craft, intention, and quiet design.",
   openGraph: {
     title: "CONSIDERED JAPAN",
-    description: "Curated fashion intelligence from Japan",
+    description:
+      "A curation platform dedicated to Japanese fashion brands that prioritize craft, intention, and quiet design.",
     type: "website",
     siteName: "CONSIDERED JAPAN",
   },
@@ -30,18 +33,7 @@ export default function RootLayout({
       <body className="bg-paper text-ink min-h-screen">
         <Nav />
         <main>{children}</main>
-        <footer className="border-t border-border mt-24 py-12 px-6">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start gap-6">
-            <div>
-              <p className="label">CONSIDERED JAPAN</p>
-              <p className="label-jp mt-1">考えられた日本</p>
-            </div>
-            <div className="text-right">
-              <p className="label">© {new Date().getFullYear()}</p>
-              <p className="label mt-1">Tokyo, Japan</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
