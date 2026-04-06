@@ -80,6 +80,30 @@ function parseItems(xml: string): FeedItem[] {
   return items;
 }
 
+// Fetch OG image from article page as fallback
+async function fetchOgImage(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; ConsideredJapanBot/1.0)" },
+      signal: AbortSignal.timeout(8000),
+      redirect: "follow",
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    // og:image
+    const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+    if (ogMatch) return ogMatch[1];
+    // twitter:image
+    const twMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)
+      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
+    if (twMatch) return twMatch[1];
+    return "";
+  } catch {
+    return "";
+  }
+}
+
 function isRelevant(item: FeedItem): boolean {
   const text = (item.title + " " + item.description).toLowerCase();
   return BRAND_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
@@ -106,6 +130,11 @@ async function slugExists(s: string): Promise<boolean> {
 async function createDraft(item: FeedItem, sourceName: string): Promise<boolean> {
   const s = makeSlug(item.title, item.link);
   if (await slugExists(s)) return false;
+
+  // If no image from RSS, try OG image from the article page
+  if (!item.image && item.link) {
+    item.image = await fetchOgImage(item.link);
+  }
 
   const today = new Date().toISOString().slice(0, 10);
 

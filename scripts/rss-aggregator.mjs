@@ -142,6 +142,24 @@ function parseItems(xml) {
 }
 
 // ──────────────────────────────────────────────
+// OGP画像フォールバック取得
+// ──────────────────────────────────────────────
+async function fetchOgImage(url) {
+  try {
+    const html = await fetchUrl(url);
+    const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+    if (ogMatch) return ogMatch[1];
+    const twMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)
+      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
+    if (twMatch) return twMatch[1];
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+// ──────────────────────────────────────────────
 // 関連記事フィルタ
 // ──────────────────────────────────────────────
 function isRelevant(item) {
@@ -177,6 +195,11 @@ function makeSlug(title, link) {
 async function createDraft(item, sourceName) {
   const s = makeSlug(item.title, item.link);
   if (await slugExists(s)) return false;
+
+  // OGP画像フォールバック
+  if (!item.image && item.link) {
+    item.image = await fetchOgImage(item.link);
+  }
 
   const today = new Date().toISOString().slice(0, 10);
   const children = [

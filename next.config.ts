@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.fashion-press.net" },
       { protocol: "https", hostname: "**.beams.co.jp" },
       { protocol: "https", hostname: "image-cdn.hypb.st" },
+      { protocol: "https", hostname: "**.houyhnhnm.jp" },
+      { protocol: "https", hostname: "**.gqjapan.jp" },
+      { protocol: "https", hostname: "media.gqjapan.jp" },
+      { protocol: "https", hostname: "**.refnet.tv" },
+      { protocol: "https", hostname: "www.refnet.tv" },
     ],
   },
 };

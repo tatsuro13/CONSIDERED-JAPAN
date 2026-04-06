@@ -70,14 +70,17 @@ function CardLarge({ item }: { item: any }) {
             </div>
           </div>
         ) : (
-          <div className="no-image-card bg-ink text-white p-8 md:p-10 flex flex-col justify-end" style={{ aspectRatio: "2.2/1" }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="bg-ink text-white p-8 md:p-12 flex flex-col justify-center items-center text-center" style={{ aspectRatio: "2.2/1" }}>
+            <div className="flex items-center gap-2 mb-4">
               {categoryBadge(item.category)}
-              <span className="text-[9px] tracking-widest text-white/50">{formatDate(item.date)}</span>
+              <span className="text-[9px] tracking-widest text-white/30">{formatDate(item.date)}</span>
             </div>
-            <h3 className="text-xl md:text-3xl title-en max-w-3xl">{item.title}</h3>
+            <h3 className="text-xl md:text-3xl title-en max-w-3xl leading-relaxed">{item.title}</h3>
             {item.titleJp && (
-              <p className="text-white/40 text-sm mt-2 title-jp">{item.titleJp}</p>
+              <p className="text-white/30 text-sm mt-3 title-jp">{item.titleJp}</p>
+            )}
+            {item.summary && (
+              <p className="text-white/20 text-xs mt-4 max-w-xl leading-relaxed hidden md:block">{item.summary}</p>
             )}
           </div>
         )}
@@ -165,72 +168,143 @@ function CardSmall({ item }: { item: any }) {
   );
 }
 
-// ── Rhythm layout: repeating pattern of large → 2-col → 3-col → list ──
+// ── Text-only card for no-image articles ──
+function CardText({ item }: { item: any }) {
+  return (
+    <article className="card-hover py-4 border-b border-border last:border-b-0">
+      <Link href={`/read/${item.slug}`} className="group block">
+        <div className="flex items-center gap-2 mb-1.5">
+          {categoryBadge(item.category)}
+          {item.sourceName && <span className="label">{item.sourceName}</span>}
+          <span className="label">{formatDate(item.date)}</span>
+        </div>
+        <h3 className="text-sm title-en group-hover:opacity-70 transition-opacity line-clamp-2">
+          {item.title}
+        </h3>
+        {item.titleJp && (
+          <p className="text-[11px] text-muted mt-1 title-jp line-clamp-1">{item.titleJp}</p>
+        )}
+      </Link>
+    </article>
+  );
+}
+
+// ── Rhythm layout: repeating pattern for visual hierarchy ──
 function renderArticleStream(items: any[]) {
   const blocks: React.ReactNode[] = [];
-  let i = 0;
 
-  while (i < items.length) {
-    const cycle = blocks.length;
+  // Split into image and text-only items
+  const imageItems = items.filter((i) => i.heroImage);
+  const textItems = items.filter((i) => !i.heroImage);
 
-    // Pattern 0: 1 large full-width
-    if (i < items.length) {
+  let imgIdx = 0;
+  let textIdx = 0;
+  let blockCount = 0;
+
+  while (imgIdx < imageItems.length) {
+    // Pattern 0: 1 large full-width (needs image)
+    if (imgIdx < imageItems.length) {
       blocks.push(
-        <div key={`lg-${i}`} className="mb-8">
-          <CardLarge item={items[i]} />
+        <div key={`lg-${blockCount}`} className="mb-10">
+          <CardLarge item={imageItems[imgIdx]} />
         </div>
       );
-      i++;
+      imgIdx++;
+      blockCount++;
     }
 
     // Pattern 1: 2-column medium cards
-    if (i < items.length) {
-      const pair = items.slice(i, i + 2);
+    if (imgIdx < imageItems.length) {
+      const count = Math.min(2, imageItems.length - imgIdx);
       blocks.push(
-        <div key={`2col-${i}`} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {pair.map((item) => (
+        <div key={`2col-${blockCount}`} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          {imageItems.slice(imgIdx, imgIdx + count).map((item) => (
             <CardMedium key={item.id} item={item} />
           ))}
         </div>
       );
-      i += pair.length;
+      imgIdx += count;
+      blockCount++;
+    }
+
+    // Interlude: insert text-only items as a compact sidebar list
+    if (textIdx < textItems.length) {
+      const batch = textItems.slice(textIdx, textIdx + 5);
+      blocks.push(
+        <div key={`text-${blockCount}`} className="mb-10 py-6 border-t border-border">
+          <p className="label mb-4">MORE STORIES</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+            {batch.map((item) => (
+              <CardText key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
+      );
+      textIdx += batch.length;
+      blockCount++;
     }
 
     // Pattern 2: 3-column medium cards
-    if (i < items.length) {
-      const trio = items.slice(i, i + 3);
+    if (imgIdx < imageItems.length) {
+      const count = Math.min(3, imageItems.length - imgIdx);
       blocks.push(
-        <div key={`3col-${i}`} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {trio.map((item) => (
+        <div key={`3col-${blockCount}`} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {imageItems.slice(imgIdx, imgIdx + count).map((item) => (
             <CardMedium key={item.id} item={item} />
           ))}
         </div>
       );
-      i += trio.length;
+      imgIdx += count;
+      blockCount++;
     }
 
-    // Pattern 3: Compact list (4-5 items, small horizontal cards)
-    if (i < items.length) {
-      const listItems = items.slice(i, i + 4);
+    // Pattern 3: Compact small cards with thumbnails
+    if (imgIdx < imageItems.length) {
+      const count = Math.min(4, imageItems.length - imgIdx);
       blocks.push(
-        <div key={`list-${i}`} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 py-6 border-t border-b border-border">
-          {listItems.map((item) => (
+        <div key={`list-${blockCount}`} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 py-6 border-t border-b border-border">
+          {imageItems.slice(imgIdx, imgIdx + count).map((item) => (
             <CardSmall key={item.id} item={item} />
           ))}
         </div>
       );
-      i += listItems.length;
+      imgIdx += count;
+      blockCount++;
     }
+  }
+
+  // Remaining text-only items at the end
+  if (textIdx < textItems.length) {
+    const remaining = textItems.slice(textIdx);
+    blocks.push(
+      <div key={`text-end-${blockCount}`} className="mb-10 py-6 border-t border-border">
+        <p className="label mb-4">MORE STORIES</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+          {remaining.map((item) => (
+            <CardText key={item.id} item={item} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return <>{blocks}</>;
 }
 
 export default async function FeedPage() {
-  const items = await getFeedItems();
-  const hero = items[0];
-  const featured = items.slice(1, 5);
-  const rest = items.slice(5);
+  const allItems = await getFeedItems();
+
+  // Separate: items with images get priority placement
+  const withImage = allItems.filter((i) => i.heroImage);
+  const withoutImage = allItems.filter((i) => !i.heroImage);
+
+  // Hero + featured must have images
+  const hero = withImage[0];
+  const featured = withImage.slice(1, 5);
+
+  // Rest: image items first, then text-only items interspersed
+  const restWithImage = withImage.slice(5);
+  const rest = [...restWithImage, ...withoutImage];
 
   return (
     <div>
@@ -373,7 +447,7 @@ export default async function FeedPage() {
       <section className="max-w-6xl mx-auto px-6 py-8">
         {renderArticleStream(rest)}
 
-        {items.length === 0 && (
+        {allItems.length === 0 && (
           <div className="py-24 text-center">
             <p className="label">NO ARTICLES YET</p>
             <p className="label-jp mt-1">記事はまだありません</p>
