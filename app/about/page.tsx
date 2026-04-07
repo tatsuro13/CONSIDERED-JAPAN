@@ -1,15 +1,65 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const SITE_URL = "https://considered-japan.vercel.app";
+
 export const metadata: Metadata = {
   title: "About",
   description:
     "Considered Japan is a curation platform dedicated to Japanese fashion brands that prioritize craft, intention, and quiet design.",
+  alternates: {
+    canonical: `${SITE_URL}/about`,
+  },
+  openGraph: {
+    title: "About — CONSIDERED JAPAN",
+    description:
+      "A curation platform dedicated to Japanese fashion brands that prioritize craft, intention, and quiet design.",
+    url: `${SITE_URL}/about`,
+    type: "website",
+  },
 };
 
 export default function AboutPage() {
+  const aboutJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About CONSIDERED JAPAN",
+    description:
+      "A curation platform dedicated to Japanese fashion brands that prioritize craft, intention, and quiet design.",
+    url: `${SITE_URL}/about`,
+    mainEntity: {
+      "@type": "Organization",
+      name: "CONSIDERED JAPAN",
+      alternateName: "考えられた日本",
+      url: SITE_URL,
+      description:
+        "A curation platform dedicated to Japanese fashion brands that prioritize craft, intention, and quiet design.",
+      foundingLocation: {
+        "@type": "Place",
+        name: "Tokyo, Japan",
+      },
+      knowsAbout: [
+        "Japanese fashion",
+        "COMOLI",
+        "sacai",
+        "nonnative",
+        "Graphpaper",
+        "HYKE",
+        "AURALEE",
+        "ATON",
+        "Porter Classic",
+        "Hender Scheme",
+        "TEATORA",
+      ],
+    },
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }}
+      />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 py-16 lg:py-24">
         {/* Main content */}
         <div className="lg:col-span-8">

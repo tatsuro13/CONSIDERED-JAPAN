@@ -17,6 +17,9 @@ export async function generateStaticParams() {
   return items.filter((i) => i.slug).map((i) => ({ slug: i.slug }));
 }
 
+const SITE_URL = "https://considered-japan.vercel.app";
+const SITE_NAME = "CONSIDERED JAPAN";
+
 export async function generateMetadata({
   params,
 }: {
@@ -25,13 +28,43 @@ export async function generateMetadata({
   const { slug } = await params;
   const item = await getFeedItemBySlug(slug);
   if (!item) return {};
+
+  const title = item.title;
+  const description = item.summary || item.titleJp || title;
+  const url = `${SITE_URL}/read/${slug}`;
+
   return {
-    title: item.title,
-    description: item.summary || item.titleJp,
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
-      title: item.title,
-      description: item.summary || item.titleJp,
-      ...(item.heroImage && { images: [{ url: item.heroImage }] }),
+      title,
+      description,
+      url,
+      siteName: SITE_NAME,
+      locale: "en_US",
+      alternateLocale: "ja_JP",
+      type: "article",
+      publishedTime: item.date ? new Date(item.date).toISOString() : undefined,
+      section: item.category || undefined,
+      ...(item.heroImage && {
+        images: [
+          {
+            url: item.heroImage,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: item.heroImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(item.heroImage && { images: [item.heroImage] }),
     },
   };
 }
@@ -216,8 +249,99 @@ export default async function ReadPage({
   const relatedIds = new Set(relatedArticles.map((a) => a.id));
   const moreArticles = latestArticles.filter((a) => !relatedIds.has(a.id));
 
+  // JSON-LD: Article structured data
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: item.title,
+    ...(item.titleJp && { alternativeHeadline: item.titleJp }),
+    description: item.summary || item.titleJp || item.title,
+    ...(item.heroImage && {
+      image: {
+        "@type": "ImageObject",
+        url: item.heroImage,
+        width: 1200,
+        height: 630,
+      },
+    }),
+    datePublished: item.date
+      ? new Date(item.date).toISOString()
+      : undefined,
+    dateModified: item.date
+      ? new Date(item.date).toISOString()
+      : undefined,
+    ...(item.category && { articleSection: item.category }),
+    inLanguage: ["en", "ja"],
+    url: `${SITE_URL}/read/${slug}`,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/read/${slug}`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/icon.png`,
+      },
+    },
+    ...(item.sourceName && {
+      author: {
+        "@type": "Organization",
+        name: item.sourceName,
+        ...(item.sourceUrl && { url: item.sourceUrl }),
+      },
+    }),
+    ...(!item.sourceName && {
+      author: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+    }),
+  };
+
+  // BreadcrumbList
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      ...(item.category
+        ? [
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: item.category,
+              item: `${SITE_URL}/?cat=${item.category.toLowerCase().replace(" ", "-")}`,
+            },
+          ]
+        : []),
+      {
+        "@type": "ListItem",
+        position: item.category ? 3 : 2,
+        name: item.title,
+        item: `${SITE_URL}/read/${slug}`,
+      },
+    ],
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* ── Hero ── */}
       {item.heroImage ? (
         <section

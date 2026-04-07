@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "media.gqjapan.jp" },
       { protocol: "https", hostname: "**.refnet.tv" },
       { protocol: "https", hostname: "www.refnet.tv" },
+      { protocol: "https", hostname: "**.humanmade.jp" },
+      { protocol: "https", hostname: "**.oceans.tokyo.jp" },
     ],
   },
 };

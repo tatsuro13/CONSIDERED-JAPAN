@@ -26,6 +26,7 @@ const BRAND_KEYWORDS = [
   "digawel", "ディガウェル", "neat", "phigvel", "フィグベル",
   "teatora", "テアトラ", "hender scheme", "エンダースキーマ", "marka", "マーカ",
   "maatee", "マーティー", "n.hoolywood",
+  "human made", "ヒューマンメイド", "humanmade",
   "japanese fashion", "made in japan", "日本製", "japan brand",
   "fashion week tokyo", "rakuten fashion",
 ];

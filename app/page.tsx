@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getFeedItems } from "@/lib/notion";
 
 export const revalidate = 60;
+
+const SITE_URL = "https://considered-japan.vercel.app";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
 
 function formatDate(d: string) {
   if (!d) return "";
@@ -306,8 +315,32 @@ export default async function FeedPage() {
   const restWithImage = withImage.slice(5);
   const rest = [...restWithImage, ...withoutImage];
 
+  // JSON-LD: CollectionPage with ItemList
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "CONSIDERED JAPAN",
+    description:
+      "Curated fashion intelligence from Japan — craft, intention, and quiet design.",
+    url: SITE_URL,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: allItems.length,
+      itemListElement: allItems.slice(0, 20).map((item, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `${SITE_URL}/read/${item.slug}`,
+        name: item.title,
+      })),
+    },
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
       {/* ── Hero ── */}
       {hero && (
         <section>

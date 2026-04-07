@@ -46,9 +46,11 @@ const BRAND_KEYWORDS = [
   "kaptain sunshine", "キャプテンサンシャイン", "aton", "エイトン", "ancellm", "アンセルム",
   "digawel", "ディガウェル", "neat", "ニート", "phigvel", "フィグベル",
   "teatora", "テアトラ", "hender scheme", "エンダースキーマ", "marka", "マーカ",
-  "maatee", "マーティー",
+  "maatee", "マーティー", "n.hoolywood",
+  "human made", "ヒューマンメイド", "humanmade",
   // 追加：日本ファッション一般
   "japanese fashion", "made in japan", "日本製", "japan brand",
+  "fashion week tokyo", "rakuten fashion",
 ];
 
 // ──────────────────────────────────────────────
