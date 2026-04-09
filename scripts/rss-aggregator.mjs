@@ -19,20 +19,28 @@ const JOURNAL_DB = process.env.NOTION_JOURNAL_DB_ID;
 // RSS フィード一覧
 // ──────────────────────────────────────────────
 const RSS_FEEDS = [
-  // メディア（日本）
+  // Tier 1: メディア（日本）
   { name: "Houyhnhnm", url: "https://www.houyhnhnm.jp/feed/", lang: "ja" },
-  { name: "Fashionsnap", url: "https://www.fashionsnap.com/news/feed/", lang: "ja" },
-  { name: "Fashion Press", url: "https://www.fashion-press.net/news/rss", lang: "ja" },
-  // メディア（海外）
+  { name: "Fashionsnap", url: "https://www.fashionsnap.com/rss.xml", lang: "ja" },
+  { name: "WWD JAPAN", url: "https://www.wwdjapan.com/feed/", lang: "ja" },
+  { name: "MEN'S NON-NO", url: "https://www.mensnonno.jp/feed/", lang: "ja" },
+  { name: "Vogue Japan", url: "https://www.vogue.co.jp/feed/rss", lang: "ja" },
+  { name: "EYESCREAM", url: "https://eyescream.jp/feed/", lang: "ja" },
+  { name: "GQ Japan", url: "https://www.gqjapan.jp/feed", lang: "ja" },
+  // Tier 1: メディア（海外）
   { name: "Highsnobiety", url: "https://www.highsnobiety.com/feed/", lang: "en" },
   { name: "Hypebeast JP", url: "https://hypebeast.com/jp/feed", lang: "ja" },
   { name: "Hypebeast EN", url: "https://hypebeast.com/feed", lang: "en" },
-  // セレクトショップ（Shopify Atom）
+  // Tier 3: ブランド公式
   { name: "ref.", url: "https://www.refnet.tv/blogs/news.atom", lang: "ja" },
-  { name: "ref. (RSS)", url: "https://www.refnet.tv/blogs/news.rss", lang: "ja" },
-  // その他
-  { name: "GQ Japan", url: "https://www.gqjapan.jp/feed", lang: "ja" },
-  { name: "OCEANS", url: "https://oceans.tokyo.jp/feed/", lang: "ja" },
+  { name: "Graphpaper", url: "https://graphpaper-tokyo.com/blogs/news.atom", lang: "ja" },
+  { name: "nonnative", url: "https://nonnative.com/feed/", lang: "ja" },
+  { name: "HYKE", url: "https://hyke.jp/blogs/news.atom", lang: "ja" },
+  { name: "sacai", url: "https://www.sacai.jp/blogs/news.atom", lang: "ja" },
+  { name: "Porter Classic", url: "https://www.porterclassic.com/blogs/journal.atom", lang: "ja" },
+  { name: "Hender Scheme", url: "https://henderscheme.com/feed/", lang: "ja" },
+  { name: "TEATORA", url: "https://www.teatora.jp/feed/", lang: "ja" },
+  { name: "ATON", url: "https://aton-tokyo.com/blogs/news.atom", lang: "ja" },
 ];
 
 // ──────────────────────────────────────────────
