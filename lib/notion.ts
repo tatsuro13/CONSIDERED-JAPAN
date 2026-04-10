@@ -10,6 +10,16 @@ export const DATABASES = {
   journal: process.env.NOTION_JOURNAL_DB_ID!,
 };
 
+/** Normalize image URL: upgrade http→https for Shopify CDN etc. */
+function normalizeImageUrl(url: string): string {
+  if (!url) return "";
+  // Shopify/brand feeds sometimes return http — upgrade to https
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  return url;
+}
+
 function extractTitle(props: any): string {
   const titleProp =
     props["名前"] ?? props["Title"] ?? props["Name"] ??
@@ -165,7 +175,7 @@ export async function getFeedItems(): Promise<FeedItem[]> {
       date: props.Date?.date?.start ?? "",
       sourceUrl: props.SourceUrl?.url ?? "",
       sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
-      heroImage: props.HeroImage?.url ?? "",
+      heroImage: normalizeImageUrl(props.HeroImage?.url ?? ""),
       summary: props.Summary?.rich_text[0]?.plain_text ?? "",
       category: props.Category?.select?.name ?? "",
     };
@@ -195,7 +205,7 @@ export async function getFeedItemBySlug(slug: string) {
     date: props.Date?.date?.start ?? "",
     sourceUrl: props.SourceUrl?.url ?? "",
     sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
-    heroImage: props.HeroImage?.url ?? "",
+    heroImage: normalizeImageUrl(props.HeroImage?.url ?? ""),
     summary: props.Summary?.rich_text[0]?.plain_text ?? "",
     category: props.Category?.select?.name ?? "",
   };
@@ -252,7 +262,7 @@ export async function getRelatedArticles(
         date: props.Date?.date?.start ?? "",
         sourceUrl: props.SourceUrl?.url ?? "",
         sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
-        heroImage: props.HeroImage?.url ?? "",
+        heroImage: normalizeImageUrl(props.HeroImage?.url ?? ""),
         summary: props.Summary?.rich_text[0]?.plain_text ?? "",
         category: props.Category?.select?.name ?? "",
       };
@@ -284,7 +294,7 @@ export async function getLatestArticles(
         date: props.Date?.date?.start ?? "",
         sourceUrl: props.SourceUrl?.url ?? "",
         sourceName: props.SourceName?.rich_text[0]?.plain_text ?? "",
-        heroImage: props.HeroImage?.url ?? "",
+        heroImage: normalizeImageUrl(props.HeroImage?.url ?? ""),
         summary: props.Summary?.rich_text[0]?.plain_text ?? "",
         category: props.Category?.select?.name ?? "",
       };
@@ -317,7 +327,7 @@ export async function getBrandBySlug(slug: string) {
     officialUrl: props.OfficialUrl?.url ?? "",
     description: props.Description?.rich_text[0]?.plain_text ?? "",
     descriptionJp: props.DescriptionJp?.rich_text[0]?.plain_text ?? "",
-    heroImage: props.HeroImage?.url ?? "",
+    heroImage: normalizeImageUrl(props.HeroImage?.url ?? ""),
   };
 }
 
@@ -342,7 +352,7 @@ export async function getBrands() {
       category: props.Category?.select?.name ?? "",
       internationalShipping: props.InternationalShipping?.checkbox ?? false,
       officialUrl: props.OfficialUrl?.url ?? "",
-      heroImage: props.HeroImage?.url ?? "",
+      heroImage: normalizeImageUrl(props.HeroImage?.url ?? ""),
     };
   });
 }

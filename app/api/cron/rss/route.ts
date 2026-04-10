@@ -151,6 +151,11 @@ async function createDraft(item: FeedItem, sourceName: string): Promise<boolean>
     item.image = await fetchOgImage(item.link);
   }
 
+  // Normalize http → https (Shopify Atom feeds often return http URLs)
+  if (item.image && item.image.startsWith("http://")) {
+    item.image = item.image.replace("http://", "https://");
+  }
+
   const today = new Date().toISOString().slice(0, 10);
 
   const children: any[] = [];
