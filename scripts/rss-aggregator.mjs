@@ -39,7 +39,6 @@ const RSS_FEEDS = [
   { name: "sacai", url: "https://www.sacai.jp/blogs/news.atom", lang: "ja" },
   { name: "Porter Classic", url: "https://www.porterclassic.com/blogs/journal.atom", lang: "ja" },
   { name: "Hender Scheme", url: "https://henderscheme.com/feed/", lang: "ja" },
-  { name: "TEATORA", url: "https://www.teatora.jp/feed/", lang: "ja" },
   { name: "ATON", url: "https://aton-tokyo.com/blogs/news.atom", lang: "ja" },
 ];
 
@@ -209,6 +208,19 @@ async function createDraft(item, sourceName) {
   // OGP画像フォールバック
   if (!item.image && item.link) {
     item.image = await fetchOgImage(item.link);
+  }
+
+  // Normalize http → https
+  if (item.image && item.image.startsWith("http://")) {
+    item.image = item.image.replace("http://", "https://");
+  }
+
+  // Skip generic brand logos/OGP that aren't real article images
+  if (item.image && (
+    item.image.includes("sacai_articles_image_logo") ||
+    item.image.includes("teatora.jp/wp/wp-content/uploads/2025/02/og_teatora.png")
+  )) {
+    item.image = "";
   }
 
   const today = new Date().toISOString().slice(0, 10);
