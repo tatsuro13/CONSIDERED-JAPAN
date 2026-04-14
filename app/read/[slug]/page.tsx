@@ -3,19 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  getFeedItems,
   getFeedItemBySlug,
   getPageBlocks,
   getRelatedArticles,
   getLatestArticles,
 } from "@/lib/notion";
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const items = await getFeedItems();
-  return items.filter((i) => i.slug).map((i) => ({ slug: i.slug }));
-}
+export const dynamic = "force-dynamic";
 
 const SITE_URL = "https://considered-japan.vercel.app";
 const SITE_NAME = "CONSIDERED JAPAN";

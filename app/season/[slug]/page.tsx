@@ -2,15 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSeasonPicks, getSeasonPickBySlug, getPageBlocks } from "@/lib/notion";
+import { getSeasonPickBySlug, getPageBlocks } from "@/lib/notion";
 import { NotionBlocks } from "@/app/components/notion-blocks";
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const picks = await getSeasonPicks();
-  return picks.map((pick) => ({ slug: pick.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

@@ -2,14 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBrands, getBrandBySlug } from "@/lib/notion";
+import { getBrandBySlug } from "@/lib/notion";
 
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const brands = await getBrands();
-  return brands.filter((b) => b.slug).map((b) => ({ slug: b.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

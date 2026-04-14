@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getJournalPosts } from "@/lib/notion";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function JournalPage() {
   const posts = await getJournalPosts();

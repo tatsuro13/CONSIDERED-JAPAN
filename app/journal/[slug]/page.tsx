@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getJournalPosts, getJournalPostBySlug, getPageBlocks } from "@/lib/notion";
+import { getJournalPostBySlug, getPageBlocks } from "@/lib/notion";
 import { NotionBlocks } from "@/app/components/notion-blocks";
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const posts = await getJournalPosts();
-  return posts.map((post) => ({ slug: post.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

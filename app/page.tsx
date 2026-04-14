@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getFeedItems } from "@/lib/notion";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 const SITE_URL = "https://considered-japan.vercel.app";
 
