@@ -165,6 +165,17 @@ async function createDraft(item: FeedItem, sourceName: string): Promise<boolean>
 
   const today = new Date().toISOString().slice(0, 10);
 
+  // Use the article's original publish date, fallback to today
+  let articleDate = today;
+  if (item.pubDate) {
+    try {
+      const parsed = new Date(item.pubDate);
+      if (!isNaN(parsed.getTime())) {
+        articleDate = parsed.toISOString().slice(0, 10);
+      }
+    } catch {}
+  }
+
   const children: any[] = [];
 
   if (item.image) {
@@ -188,7 +199,7 @@ async function createDraft(item: FeedItem, sourceName: string): Promise<boolean>
   const props: Record<string, any> = {
     名前: { title: [{ text: { content: `[RSS] ${item.title}` } }] },
     Slug: { rich_text: [{ text: { content: s } }] },
-    Date: { date: { start: today } },
+    Date: { date: { start: articleDate } },
     Status: { select: { name: "Draft" } },
     SourceUrl: { url: item.link },
     SourceName: { rich_text: [{ text: { content: sourceName } }] },

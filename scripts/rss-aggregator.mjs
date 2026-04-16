@@ -251,19 +251,6 @@ async function createDraft(item, sourceName) {
     });
   }
 
-  children.push({
-    object: "block",
-    type: "paragraph",
-    paragraph: {
-      rich_text: [
-        {
-          type: "text",
-          text: { content: "→ 元記事を参考にオリジナル記事を執筆してください。コピーは行わないこと。" },
-        },
-      ],
-    },
-  });
-
   // 画像があればcalloutブロックに含める
   if (item.image) {
     children.splice(1, 0, {
@@ -273,10 +260,21 @@ async function createDraft(item, sourceName) {
     });
   }
 
+  // Use the article's original publish date, fallback to today
+  let articleDate = today;
+  if (item.pubDate) {
+    try {
+      const parsed = new Date(item.pubDate);
+      if (!isNaN(parsed.getTime())) {
+        articleDate = parsed.toISOString().slice(0, 10);
+      }
+    } catch {}
+  }
+
   const props = {
     名前: { title: [{ text: { content: `[RSS] ${item.title}` } }] },
     Slug: { rich_text: [{ text: { content: s } }] },
-    Date: { date: { start: today } },
+    Date: { date: { start: articleDate } },
     Status: { select: { name: "Draft" } },
     SourceUrl: { url: item.link },
     SourceName: { rich_text: [{ text: { content: sourceName } }] },
